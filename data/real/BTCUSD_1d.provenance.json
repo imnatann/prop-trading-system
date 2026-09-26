@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "symbol": "BTCUSD",
+    "yahoo_symbol": "BTC-USD",
+    "interval": "1d",
+    "range": "5y",
+    "bars": 1827,
+    "dropped_null_bars": 0,
+    "first_utc": "2021-09-26T00:00:00+00:00",
+    "last_utc": "2026-09-26T00:00:00+00:00",
+    "retrieved_utc": "2026-09-26T18:52:20.883317+00:00",
+    "source": "Yahoo Finance chart API (indicative OHLC, NOT executable quotes)",
+    "limitations": [
+      "no bid/ask: spread is MODELLED, not observed",
+      "no tick data: intrabar path limited to bar extremes",
+      "not a consolidated tape"
+    ]
+  },
+  "quality": {
+    "bars": 1827,
+    "first_utc": "2021-09-26T00:00:00+00:00",
+    "last_utc": "2026-09-26T00:00:00+00:00",
+    "span_years": 4.999,
+    "crossed_bars": 0,
+    "zero_range_bars": 0,
+    "gaps_over_4_days": 0,
+    "max_gap_days": 0.0,
+    "problems": [],
+    "ok": true
+  },
+  "interval_limits": {
+    "1d": "10y is reliable (2611 bars measured)",
+    "1h": "2y maximum (12530 bars measured)",
+    "15m": "60 days only - NOT sufficient for walk-forward",
+    "5m": "60 days only - NOT sufficient for walk-forward"
+  }
+}

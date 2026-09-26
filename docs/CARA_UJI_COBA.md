@@ -602,6 +602,21 @@ python -m scripts.fundingpips_bot --symbol BTCUSD --allow-order
 # --poll-interval 10    (Interval pemindaian candle dalam detik)
 ```
 
+### 2i. Menjalankan Backtest Kuantitatif (scripts.backtest)
+
+Anda bisa menguji performa strategi pada data historis nyata (10 tahun daily atau 2 tahun hourly) dengan penegakan aturan FundingPips (Daily Loss 5%, Max Loss 10%):
+
+```bash
+# Backtest EURUSD pada data 1 Jam (2 tahun terakhir):
+python -m scripts.backtest --symbol EURUSD --timeframe 1h
+
+# Backtest BTCUSD pada data Harian (5 tahun terakhir):
+python -m scripts.backtest --symbol BTCUSD --timeframe 1d
+
+# Mengatur saldo awal akun dan persentase risiko:
+python -m scripts.backtest --symbol EURUSD --balance 50000 --risk-pct 0.5
+```
+
 ---
 
 ## Syarat minimal sebelum smoke order

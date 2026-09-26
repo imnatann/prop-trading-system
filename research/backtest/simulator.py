@@ -99,8 +99,8 @@ class PropBacktestSimulator:
         breach_reason = None
         trade_counter = 1
 
-        pip_value = 10.0  # Standard $10 per pip per standard lot for EURUSD
-        pip_unit = 0.0001
+        pip_unit = self.spec.pip_size if self.spec else 0.0001
+        pip_value = self.spec.pip_value if self.spec else 10.0
 
         for i in range(len(df)):
             idx = df.index[i]

@@ -119,3 +119,12 @@ def test_backtest_simulator_breach_detection():
 
     assert res.passed_prop_rules is False
     assert "Breached Max Daily Drawdown" in (res.breach_reason or "")
+
+
+def test_backtest_cli(capsys):
+    from scripts import backtest as cli
+    ret = cli.run(["--symbol", "EURUSD", "--timeframe", "1h", "--limit-bars", "100"])
+    assert ret == 0
+    out = capsys.readouterr().out
+    assert "Backtesting Strategy on EURUSD" in out
+    assert "Backtest Results" in out

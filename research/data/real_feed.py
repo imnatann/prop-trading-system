@@ -48,6 +48,8 @@ YAHOO_SYMBOLS: Dict[str, str] = {
     "USDCAD": "CAD=X",
     "USDCHF": "CHF=X",
     "XAUUSD": "GC=F",
+    "BTCUSD": "BTC-USD",
+    "BTC": "BTC-USD",
 }
 
 from src.paths import REAL_DATA_DIR as OUT_DIR
