@@ -448,6 +448,28 @@ class FundingPipsMT5Adapter(ExecutionBroker):
             flags=int(getattr(raw, "flags", 0) or 0),
         )
 
+    def get_bars(self, symbol: str, timeframe: str = "M15", count: int = 100):
+        """Fetch historical OHLCV bars from MT5 as a pandas DataFrame."""
+        import pandas as pd
+        mt5 = self._require_connected()
+        provider = self.resolve(symbol)
+        tf_map = {
+            "M1": getattr(mt5, "TIMEFRAME_M1", 1),
+            "M5": getattr(mt5, "TIMEFRAME_M5", 5),
+            "M15": getattr(mt5, "TIMEFRAME_M15", 15),
+            "H1": getattr(mt5, "TIMEFRAME_H1", 16385),
+            "H4": getattr(mt5, "TIMEFRAME_H4", 16388),
+            "D1": getattr(mt5, "TIMEFRAME_D1", 16408),
+        }
+        tf = tf_map.get(str(timeframe).upper(), getattr(mt5, "TIMEFRAME_M15", 15))
+        rates = mt5.copy_rates_from_pos(provider, tf, 0, count)
+        if rates is None or len(rates) == 0:
+            return pd.DataFrame(columns=["open", "high", "low", "close", "volume", "time"])
+        df = pd.DataFrame(rates)
+        if "tick_volume" in df.columns and "volume" not in df.columns:
+            df["volume"] = df["tick_volume"]
+        return df
+
     def positions(self, symbol: Optional[str] = None) -> List[PositionSnapshot]:
         mt5 = self._require_connected()
         provider = self.resolve(symbol) if symbol else None

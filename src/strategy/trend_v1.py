@@ -86,8 +86,11 @@ class EURUSDMultiTimeframeTrendStrategy(BaseStrategy):
         curr = data.iloc[-1]
         prev = data.iloc[-2]
 
-        curr_close = round(float(curr["close"]), 5)
-        atr = round(float(curr["atr"]), 5) if not pd.isna(curr["atr"]) and curr["atr"] > 0 else 0.0015
+        is_crypto_or_index = float(curr["close"]) > 100.0
+        decimals = 2 if is_crypto_or_index else 5
+        curr_close = round(float(curr["close"]), decimals)
+        default_atr = (curr_close * 0.003) if is_crypto_or_index else 0.0015
+        atr = round(float(curr["atr"]), decimals) if not pd.isna(curr["atr"]) and curr["atr"] > 0 else default_atr
 
         # 1. Regime Filter: Periksa apakah harga berada di atas/bawah Trend Baseline
         trend_val = curr["ema_trend"] if not pd.isna(curr["ema_trend"]) else curr["ema_slow"]
@@ -101,10 +104,10 @@ class EURUSDMultiTimeframeTrendStrategy(BaseStrategy):
             continuation = curr_close > curr["open"] and curr["ema_fast"] > prev["ema_fast"]
 
             if pullback_recovered or breakout_trigger or continuation:
-                sl = round(curr_close - (self.atr_multiplier * atr), 5)
-                sl_dist = round(curr_close - sl, 5)
+                sl = round(curr_close - (self.atr_multiplier * atr), decimals)
+                sl_dist = round(curr_close - sl, decimals)
                 if sl_dist > 0:
-                    tp = round(curr_close + (sl_dist * self.min_risk_reward), 5)
+                    tp = round(curr_close + (sl_dist * self.min_risk_reward), decimals)
                     return TradeSignal(
                         symbol=symbol,
                         action=SignalAction.BUY,
@@ -121,10 +124,10 @@ class EURUSDMultiTimeframeTrendStrategy(BaseStrategy):
             continuation = curr_close < curr["open"] and curr["ema_fast"] < prev["ema_fast"]
 
             if pullback_recovered or breakdown_trigger or continuation:
-                sl = round(curr_close + (self.atr_multiplier * atr), 5)
-                sl_dist = round(sl - curr_close, 5)
+                sl = round(curr_close + (self.atr_multiplier * atr), decimals)
+                sl_dist = round(sl - curr_close, decimals)
                 if sl_dist > 0:
-                    tp = round(curr_close - (sl_dist * self.min_risk_reward), 5)
+                    tp = round(curr_close - (sl_dist * self.min_risk_reward), decimals)
                     return TradeSignal(
                         symbol=symbol,
                         action=SignalAction.SELL,

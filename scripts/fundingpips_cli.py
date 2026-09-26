@@ -71,7 +71,7 @@ def report_failure(exc: BaseException) -> int:
 
 
 def build_adapter(allow_order: bool = False, max_spread_pips: Optional[float] = None,
-                  mock: bool = False):
+                  mock: bool = False, symbol: str = "EURUSD"):
     """Construct the adapter WITHOUT connecting. Read-only by default.
 
     When mock=True, an in-memory FakeMetaTrader5 gateway is injected. This allows
@@ -89,11 +89,13 @@ def build_adapter(allow_order: bool = False, max_spread_pips: Optional[float] = 
             mt5_module=make_fake(),
             allow_order=allow_order,
             max_spread_pips=max_spread_pips,
+            symbol=symbol,
         )
 
     return FundingPipsMT5Adapter.from_env(
         allow_order=allow_order,
         max_spread_pips=max_spread_pips,
+        symbol=symbol,
     )
 
 

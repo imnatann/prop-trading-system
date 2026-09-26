@@ -149,6 +149,13 @@ class FakeMetaTrader5:
     TRADE_RETCODE_REJECT = 10004
     TRADE_RETCODE_INVALID_FILL = 10030
 
+    TIMEFRAME_M1 = 1
+    TIMEFRAME_M5 = 5
+    TIMEFRAME_M15 = 15
+    TIMEFRAME_H1 = 16385
+    TIMEFRAME_H4 = 16388
+    TIMEFRAME_D1 = 16408
+
     def __init__(
         self,
         account: Optional[FakeAccount] = None,
@@ -163,7 +170,25 @@ class FakeMetaTrader5:
         account_info_none: bool = False,
     ) -> None:
         self.account = account or FakeAccount()
-        self._symbols = symbols if symbols is not None else [FakeSymbol()]
+        default_syms = [
+            FakeSymbol(name="EURUSD"),
+            FakeSymbol(
+                name="BTCUSD",
+                digits=2,
+                point=0.01,
+                trade_tick_size=0.01,
+                trade_tick_value=0.01,
+                trade_contract_size=1.0,
+                volume_min=0.01,
+                volume_max=1.0,
+                volume_step=0.01,
+                currency_base="USD",
+                currency_profit="USD",
+                currency_margin="USD",
+                spread=2000,
+            )
+        ]
+        self._symbols = symbols if symbols is not None else default_syms
         self.tick_value = tick or FakeTick()
         self.positions_value = positions if positions is not None else []
         self.orders_value = orders if orders is not None else []
@@ -248,6 +273,8 @@ class FakeMetaTrader5:
         self._tick_calls += 1
         for sym in self._symbols:
             if sym.name == name:
+                if "BTC" in name:
+                    return FakeTick(bid=84120.0, ask=84145.0, last=84130.0)
                 return self.tick_value
         return None
 
@@ -266,6 +293,35 @@ class FakeMetaTrader5:
         if symbol is not None:
             out = [o for o in out if o.symbol == symbol]
         return tuple(out)
+
+    def copy_rates_from_pos(self, symbol: str, timeframe: int, start_pos: int, count: int):
+        self._record("copy_rates_from_pos")
+        import numpy as np
+        now = int(time.time())
+        dtype = [
+            ("time", "<i8"),
+            ("open", "<f8"),
+            ("high", "<f8"),
+            ("low", "<f8"),
+            ("close", "<f8"),
+            ("tick_volume", "<u8"),
+            ("spread", "<i4"),
+            ("real_volume", "<u8"),
+        ]
+        rates = np.zeros(count, dtype=dtype)
+        is_btc = "BTC" in symbol.upper()
+        base = 84100.0 if is_btc else 1.08500
+        step = 60 * 15
+        for i in range(count):
+            t = now - (count - i) * step
+            if is_btc:
+                c = base + (i * 20.0) + (35.0 if (i % 3 == 0) else -15.0)
+                rates[i] = (t, c - 15.0, c + 40.0, c - 25.0, c, 100, 2000, 0)
+            else:
+                # Generate mild upward drift with pullbacks so indicators have enough movement
+                c = base + (i * 0.00008) + (0.00015 if (i % 3 == 0) else -0.00005)
+                rates[i] = (t, c - 0.0001, c + 0.00025, c - 0.00015, c, 100, 12, 0)
+        return rates
 
     def order_send(self, request: Dict[str, Any]) -> FakeOrderResult:
         self._record("order_send")

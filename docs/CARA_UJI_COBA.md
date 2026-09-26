@@ -582,6 +582,26 @@ Atau jika ingin melihat dalam format JSON:
 python -m scripts.view_trades --json
 ```
 
+### 2h. Menjalankan Bot Trading Otomatis (fundingpips_bot)
+
+Setelah verifikasi smoke order berhasil, sistem dapat dijalankan secara **otonom penuh (Automated Daemon)**:
+
+```powershell
+# 1. Mode Monitor / Dry Run (Memantau grafik & mencetak sinyal tanpa mengirim order):
+python -m scripts.fundingpips_bot --symbol EURUSD
+
+# 2. Mode Live Trading Otomatis Penuh (Mengeksekusi order saat ada sinyal):
+python -m scripts.fundingpips_bot --symbol EURUSD --allow-order
+
+# 3. Mode Trading Akhir Pekan / Weekend (Pasar Bitcoin 24/7):
+python -m scripts.fundingpips_bot --symbol BTCUSD --allow-order
+
+# Opsi tambahan yang bisa disesuaikan:
+# --risk-pct 0.5        (Persentase risiko modal per trade, default 0.5%)
+# --max-trades-day 3    (Batas maksimal trade per hari untuk disiplin modal)
+# --poll-interval 10    (Interval pemindaian candle dalam detik)
+```
+
 ---
 
 ## Syarat minimal sebelum smoke order
