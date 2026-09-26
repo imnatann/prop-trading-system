@@ -1,0 +1,24 @@
+firm_name: "The5ers"
+program_type: "High Stakes"
+server_timezone: "Europe/London"
+
+risk_limits:
+  max_daily_loss_pct: 5.0
+  daily_loss_type: "HIGHER_OF_BALANCE_EQUITY_MIDNIGHT"
+  max_total_loss_pct: 10.0
+  total_loss_type: "STATIC_FROM_INITIAL_BALANCE"
+  kill_switch_daily_pct: 4.5
+
+trading_rules:
+  news_trading_allowed: true
+  news_blackout_minutes_before: 2
+  news_blackout_minutes_after: 2
+  weekend_holding_allowed: true
+  min_trading_days: 3
+  max_trading_days: 0
+
+evaluation_targets:
+  phase_1_target_pct: 8.0
+  phase_2_target_pct: 5.0
+  min_lot: 0.01
+  max_lot: 50.0

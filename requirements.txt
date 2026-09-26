@@ -1,0 +1,33 @@
+# Core Framework & Settings
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Logging & Telemetry
+loguru>=0.7.0
+
+# Quantitative Data & Calculations
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Network & APIs
+requests>=2.31.0
+
+# .env loading for the execution credentials (already pulled in by
+# pydantic-settings, declared explicitly because config/fundingpips.py uses it)
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# =============================================================================
+# OPTIONAL EXTRAS - NOT installed by default.
+#
+# The official MetaTrader5 package is Windows-only. Research, the backtest
+# simulator, and the entire test suite must keep working on macOS/Linux, so MT5 is
+# deliberately NOT a hard dependency of this file.
+#
+# On a Windows MT5 host/VPS install it separately:
+#     pip install MetaTrader5
+# =============================================================================
+# MetaTrader5>=5.0.45

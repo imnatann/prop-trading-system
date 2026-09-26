@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "symbol": "EURUSD",
+    "yahoo_symbol": "EURUSD=X",
+    "interval": "1d",
+    "range": "10y",
+    "bars": 2602,
+    "dropped_null_bars": 9,
+    "first_utc": "2016-09-25T23:00:00+00:00",
+    "last_utc": "2026-09-25T17:31:08+00:00",
+    "retrieved_utc": "2026-09-25T17:31:29.545073+00:00",
+    "source": "Yahoo Finance chart API (indicative OHLC, NOT executable quotes)",
+    "limitations": [
+      "no bid/ask: spread is MODELLED, not observed",
+      "no tick data: intrabar path limited to bar extremes",
+      "not a consolidated tape"
+    ]
+  },
+  "quality": {
+    "bars": 2602,
+    "first_utc": "2016-09-25T23:00:00+00:00",
+    "last_utc": "2026-09-25T17:31:08+00:00",
+    "span_years": 9.996,
+    "crossed_bars": 0,
+    "zero_range_bars": 0,
+    "gaps_over_4_days": 1,
+    "max_gap_days": 5.0,
+    "problems": [],
+    "ok": true
+  },
+  "interval_limits": {
+    "1d": "10y is reliable (2611 bars measured)",
+    "1h": "2y maximum (12530 bars measured)",
+    "15m": "60 days only - NOT sufficient for walk-forward",
+    "5m": "60 days only - NOT sufficient for walk-forward"
+  }
+}

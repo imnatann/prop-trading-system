@@ -1,0 +1,40 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+.pytest_cache/
+*.log
+logs/
+storage/
+halt.lock
+
+# ---------------------------------------------------------------------------
+# Secrets. NOTHING matching these patterns may ever be committed.
+# .env.example is the ONLY .env* file that is tracked, and it holds placeholders.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# Local credential stores / key material
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service-account*.json
+
+# ---------------------------------------------------------------------------
+# FundingPips execution telemetry (live calibration data)
+# Spread samples, execution profile, calibration report. Never committed: it is
+# machine- and session-specific, and it is not alpha evidence.
+# ---------------------------------------------------------------------------
+data/execution/
+data/trades/
