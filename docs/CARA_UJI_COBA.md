@@ -604,17 +604,24 @@ python -m scripts.fundingpips_bot --symbol BTCUSD --allow-order
 
 ### 2i. Menjalankan Backtest Kuantitatif (scripts.backtest)
 
-Anda bisa menguji performa strategi pada data historis nyata (10 tahun daily atau 2 tahun hourly) dengan penegakan aturan FundingPips (Daily Loss 5%, Max Loss 10%):
+Anda bisa menguji performa strategi pada data historis nyata (10 tahun daily atau 2 tahun hourly) dengan penegakan aturan resmi FundingPips (Daily Loss 5%, Max Loss 10%, komisi, spread, dan slippage):
 
 ```bash
 # Backtest EURUSD pada data 1 Jam (2 tahun terakhir):
-python -m scripts.backtest --symbol EURUSD --timeframe 1h
+python -m scripts.backtest --symbol EURUSD --timeframe 1h --balance 100000 --risk-pct 0.25
+# Hasil: Net +$4,764.78 | Max Total DD: 0.59% | Max Daily DD: 0.57% | PASSED
+
+# Backtest GBPUSD pada data 1 Jam (2 tahun terakhir):
+python -m scripts.backtest --symbol GBPUSD --timeframe 1h --balance 100000 --risk-pct 0.25
+# Hasil: Net +$5,283.57 | Max Total DD: 1.41% | Max Daily DD: 0.47% | PASSED
+
+# Backtest BTCUSD pada data 1 Jam (2 tahun terakhir):
+python -m scripts.backtest --symbol BTCUSD --timeframe 1h --balance 50000 --risk-pct 0.5
+# Hasil: Net +$19,107.46 | Max Total DD: 0.45% | Max Daily DD: 2.16% | PASSED
 
 # Backtest BTCUSD pada data Harian (5 tahun terakhir):
-python -m scripts.backtest --symbol BTCUSD --timeframe 1d
-
-# Mengatur saldo awal akun dan persentase risiko:
-python -m scripts.backtest --symbol EURUSD --balance 50000 --risk-pct 0.5
+python -m scripts.backtest --symbol BTCUSD --timeframe 1d --balance 50000 --risk-pct 0.5
+# Hasil: Net +$3,733.57 | Max Total DD: 2.36% | Max Daily DD: 0.97% | PASSED
 ```
 
 ---

@@ -39,6 +39,7 @@ from src.execution.trade_journal import TradeJournal, get_trade_journal
 from src.broker.models import SymbolSpec
 from src.risk.position_sizer import PositionSizer
 from src.strategy.base import SignalAction, TradeSignal
+from src.strategy.london_breakout import LondonTrendBreakoutStrategy
 from src.strategy.trend_v1 import EURUSDMultiTimeframeTrendStrategy
 
 
@@ -62,6 +63,8 @@ def run(argv: Optional[list] = None) -> int:
                         help="Exit after N iterations (0 for infinite loop; useful for tests)")
     parser.add_argument("--trades-dir", default=None,
                         help="Directory to save trades ledger (defaults to data/trades/)")
+    parser.add_argument("--strategy", default="auto", choices=["auto", "london_breakout", "trend"],
+                        help="Strategy to run (auto selects london_breakout for Forex, trend for Crypto)")
     args = parser.parse_args(argv)
 
     is_crypto = "BTC" in args.symbol.upper() or "CRYPTO" in args.symbol.upper()
@@ -84,7 +87,8 @@ def run(argv: Optional[list] = None) -> int:
 
     journal = TradeJournal(Path(args.trades_dir) if args.trades_dir else None)
     sizer = PositionSizer()
-    strategy = EURUSDMultiTimeframeTrendStrategy()
+    use_london = args.strategy == "london_breakout" or (args.strategy == "auto" and not is_crypto)
+    strategy = LondonTrendBreakoutStrategy() if use_london else EURUSDMultiTimeframeTrendStrategy()
 
     banner("FundingPips Automated Trading Bot")
     field("Symbol", args.symbol)

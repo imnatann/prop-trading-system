@@ -35,6 +35,7 @@ def test_bot_executes_order_with_allow_order(tmp_path, capsys, monkeypatch):
 
     code = bot_cli.run([
         "--symbol", "EURUSD",
+        "--strategy", "trend",
         "--mock",
         "--allow-order",
         "--poll-interval", "0.01",

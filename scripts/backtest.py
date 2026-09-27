@@ -24,6 +24,7 @@ from research.data.real_feed import fetch_yahoo, load_csv, save_csv, save_proven
 from scripts.fundingpips_cli import banner, field, safe_main
 from src.broker.models import SymbolSpec
 from src.paths import REAL_DATA_DIR
+from src.strategy.london_breakout import LondonTrendBreakoutStrategy
 from src.strategy.trend_v1 import EURUSDMultiTimeframeTrendStrategy
 
 
@@ -34,6 +35,8 @@ def run(argv: Optional[list] = None) -> int:
     parser.add_argument("--balance", type=float, default=50000.0, help="Initial balance (default $50,000)")
     parser.add_argument("--risk-pct", type=float, default=0.5, help="Risk per trade in percent (default 0.5)")
     parser.add_argument("--limit-bars", type=int, default=0, help="Limit number of bars (0 for all)")
+    parser.add_argument("--strategy", default="auto", choices=["auto", "london_breakout", "trend"],
+                        help="Strategy to run (auto selects london_breakout for Forex, trend for Crypto)")
     args = parser.parse_args(argv)
 
     symbol = args.symbol.upper()
@@ -57,14 +60,12 @@ def run(argv: Optional[list] = None) -> int:
         print("Data in %s is empty." % csv_file.name)
         return 1
 
-    # Format dataframe for simulator
-    time_col = "timestamp" if "timestamp" in df_raw.columns else "time"
-    if time_col in df_raw.columns:
-        df_raw["datetime"] = pd.to_datetime(df_raw[time_col])
-        df_raw = df_raw.set_index("datetime")
-    elif "Date" in df_raw.columns:
-        df_raw["datetime"] = pd.to_datetime(df_raw["Date"])
-        df_raw = df_raw.set_index("datetime")
+    # Format dataframe for simulator with proper datetime index
+    for col in ("timestamp_utc", "timestamp", "time", "Date", "datetime"):
+        if col in df_raw.columns:
+            df_raw["datetime"] = pd.to_datetime(df_raw[col])
+            df_raw = df_raw.set_index("datetime")
+            break
 
     if args.limit_bars > 0:
         df_raw = df_raw.iloc[-args.limit_bars:]
@@ -100,7 +101,8 @@ def run(argv: Optional[list] = None) -> int:
         risk_per_trade_pct=args.risk_pct,
     )
 
-    strategy = EURUSDMultiTimeframeTrendStrategy()
+    use_london = args.strategy == "london_breakout" or (args.strategy == "auto" and not is_crypto and args.timeframe == "1h")
+    strategy = LondonTrendBreakoutStrategy() if use_london else EURUSDMultiTimeframeTrendStrategy()
 
     banner("Backtesting Strategy on %s (%s)" % (symbol, args.timeframe))
     field("Symbol", symbol)
